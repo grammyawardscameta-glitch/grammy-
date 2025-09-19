@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Avaliação - Grammy 2025</title>
+  <style>
+    :root {
+      --bg-primary: linear-gradient(135deg, #0c1a3e, #1a2d64);
+      --bg-secondary: rgba(10, 15, 50, 0.9);
+      --text-color: #fff;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --btn-gradient: linear-gradient(90deg, #00bfff, #0088cc);
+      --gold: gold;
+      --glow: rgba(255, 215, 0, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body {
+      background: var(--bg-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      background: var(--bg-secondary);
+      border: 3px solid var(--gold);
+      border-radius: 20px;
+      box-shadow: 0 0 30px var(--glow);
+      padding: 40px 20px;
+      margin: 30px 0;
+    }
+
+    .logo {
+      font-size: 4rem;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+      font-size: 3rem;
+      margin: 20px 0;
+    }
+
+    .video-nav select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: white;
+      margin: 20px 0;
+    }
+
+    .btn-acessar {
+      padding: 15px 30px;
+      background: var(--btn-gradient);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 20px 0;
+      display: block;
+      width: fit-content;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th {
+      background: rgba(0, 191, 255, 0.3);
+      color: var(--gold);
+    }
+
+    .btn-salvar {
+      padding: 14px 24px;
+      background: var(--btn-gradient);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .resultado {
+      margin: 20px 0;
+      color: #4caf50;
+      font-weight: bold;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo"><i class="fas fa-award"></i></div>
+    <h2>Avaliação de Vídeos</h2>
+    <p>Bem-vindo, <strong id="nomeJurado">Jurado</strong>!</p>
+
+    <div class="video-nav">
+      <label>Selecione a apresentação:</label>
+      <select id="videoSelect" onchange="carregarVideo()"></select>
+    </div>
+
+    <div style="text-align:center;">
+      <div id="tituloVideo" style="font-size:1.5em; color:var(--gold); margin:15px 0;"></div>
+      <a id="linkDrive" href="#" target="_blank">
+        <button class="btn-acessar">📁 ABRIR PASTA NO GOOGLE DRIVE</button>
+      </a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Nota (0 a 10)</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
+
+    <div style="text-align:center;">
+      <button class="btn-salvar" onclick="salvarAvaliacao()">💾 Salvar Avaliação</button>
+      <div id="resultado" class="resultado"></div>
+    </div>
+  </div>
+
+  <script>
+    const usuarioAtual = JSON.parse(localStorage.getItem("usuarioAtual"))?.nome || "jurado";
+    let avaliacoes = JSON.parse(localStorage.getItem("avaliacoes")) || {};
+    const bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
+
+    document.getElementById("nomeJurado").textContent = usuarioAtual;
+
+    function carregarSelect() {
+      const select = document.getElementById("videoSelect");
+      select.innerHTML = "";
+
+      if (bancoDados.pastas.length === 0) {
+        const opt = document.createElement("option");
+        opt.textContent = "Nenhuma pasta cadastrada";
+        opt.disabled = true;
+        select.appendChild(opt);
+        return;
+      }
+
+      bancoDados.pastas.forEach(pasta => {
+        const opt = document.createElement("option");
+        opt.value = pasta.id;
+        opt.textContent = pasta.titulo;
+        select.appendChild(opt);
+      });
+
+      if (select.options.length > 0) carregarVideo();
+    }
+
+    function carregarVideo() {
+      const id = document.getElementById("videoSelect").value;
+      const pasta = bancoDados.pastas.find(p => p.id == id);
+      if (!pasta) return;
+
+      document.getElementById("tituloVideo").textContent = pasta.titulo;
+      document.getElementById("linkDrive").href = pasta.url;
+
+      const tabela = document.getElementById("tabela");
+      tabela.innerHTML = "";
+
+      const categorias = [
+        "Roteiro", "Produção", "Equipe de lipsinch/dublagem/karaokê", "Figurino",
+        "Sinergia música/filmagem", "Criatividade", "Coreografia/performance",
+        "Artistas-revelação (elenco/atuação)", "Caracterização de arte audiovisual"
+      ];
+
+      const avaliado = avaliacoes[id] && avaliacoes[id][usuarioAtual];
+
+      categorias.forEach(cat => {
+        const tr = document.createElement("tr");
+        const tdCat = document.createElement("td");
+        tdCat.textContent = cat;
+        tr.appendChild(tdCat);
+
+        const tdNota = document.createElement("td");
+        const select = document.createElement("select");
+
+        for (let n = 0; n <= 10; n += 0.5) {
+          const opt = document.createElement("option");
+          opt.value = n;
+          opt.textContent = n.toFixed(1);
+          if (avaliado && avaliado.notas[cat] === n) opt.selected = true;
+          select.appendChild(opt);
+        }
+
+        tdNota.appendChild(select);
+        tr.appendChild(tdNota);
+        tabela.appendChild(tr);
+      });
+
+      document.getElementById("resultado").textContent = avaliado ? `Avaliado - Média: ${avaliado.media}` : "";
+    }
+
+    function salvarAvaliacao() {
+      const id = document.getElementById("videoSelect").value;
+      const selects = document.querySelectorAll("#tabela select");
+      let soma = 0;
+      const notas = {};
+
+      selects.forEach((sel, i) => {
+        const valor = parseFloat(sel.value);
+        soma += valor;
+        const cat = sel.parentElement.parentElement.querySelector("td").textContent;
+        notas[cat] = valor;
+      });
+
+      const media = (soma / selects.length).toFixed(2);
+
+      if (!avaliacoes[id]) avaliacoes[id] = {};
+      avaliacoes[id][usuarioAtual] = { notas, media };
+
+      localStorage.setItem("avaliacoes", JSON.stringify(avaliacoes));
+      document.getElementById("resultado").textContent = `✅ Salvo! Média: ${media}`;
+      carregarSelect();
+    }
+
+    // Inicializar
+    carregarSelect();
+  </script>
+</body>
+</html>

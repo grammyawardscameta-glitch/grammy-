@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR" id="html-theme">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Gerente - Grammy 2025</title>
+  <style>
+    :root {
+      --bg-primary: linear-gradient(135deg, #0c1a3e, #1a2d64);
+      --bg-secondary: rgba(10, 15, 50, 0.9);
+      --form-bg: rgba(15, 20, 60, 0.8);
+      --text-color: #fff;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --input-border: rgba(255, 255, 255, 0.2);
+      --btn-gradient: linear-gradient(90deg, #00bfff, #0088cc);
+      --gold: gold;
+      --glow: rgba(255, 215, 0, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body {
+      background: var(--bg-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      background: var(--bg-secondary);
+      border: 3px solid var(--gold);
+      border-radius: 20px;
+      box-shadow: 0 0 30px var(--glow);
+      padding: 40px 20px;
+      margin: 30px 0;
+    }
+
+    .logo {
+      font-size: 4rem;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+      font-size: 3rem;
+      margin: 20px 0;
+    }
+
+    .form-group {
+      margin: 20px 0;
+    }
+
+    .form-group label {
+      display: block;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: white;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: var(--btn-gradient);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid var(--gold);
+    }
+
+    .link-card h4 {
+      color: var(--gold);
+    }
+
+    a.btn-drive {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: #0088cc;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 10px 0;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo"><i class="fas fa-award"></i></div>
+    <h2>Painel do Gerente</h2>
+
+    <!-- Formulário de cadastro -->
+    <div>
+      <h3 style="color:var(--gold);">🔗 Cadastrar Pasta do Google Drive</h3>
+      <div class="form-group">
+        <label>Título da Apresentação</label>
+        <input type="text" id="titulo" class="form-control" placeholder="Ex: Equipe A - Dança Criativa">
+      </div>
+      <div class="form-group">
+        <label>Nome da Equipe / Criador</label>
+        <input type="text" id="criador" class="form-control" placeholder="Equipe A">
+      </div>
+      <div class="form-group">
+        <label>Link da Pasta no Google Drive</label>
+        <input type="url" id="url" class="form-control" placeholder="Cole o link aqui">
+      </div>
+      <button onclick="cadastrarPasta()" class="btn-login">➕ Cadastrar Pasta</button>
+    </div>
+
+    <!-- Lista de pastas cadastradas -->
+    <div style="margin-top: 40px;">
+      <h3 style="color:var(--gold);">📁 Pastas Cadastradas</h3>
+      <div id="listaPastas"></div>
+    </div>
+  </div>
+
+  <script>
+    // Banco de dados local
+    let bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
+
+    function cadastrarPasta() {
+      const titulo = document.getElementById("titulo").value.trim();
+      const criador = document.getElementById("criador").value.trim();
+      const url = document.getElementById("url").value.trim();
+
+      if (!titulo || !criador || !url) {
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      const id = bancoDados.pastas.length ? bancoDados.pastas[bancoDados.pastas.length - 1].id + 1 : 1;
+
+      bancoDados.pastas.push({ id, titulo, criador, url });
+      localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
+
+      // Limpar campos
+      document.getElementById("titulo").value = "";
+      document.getElementById("criador").value = "";
+      document.getElementById("url").value = "";
+
+      // Atualizar lista
+      renderizarPastas();
+    }
+
+    function excluirPasta(id) {
+      if (confirm("Tem certeza que deseja excluir esta pasta?")) {
+        bancoDados.pastas = bancoDados.pastas.filter(p => p.id !== id);
+        localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
+        renderizarPastas();
+      }
+    }
+
+    function renderizarPastas() {
+      const div = document.getElementById("listaPastas");
+      div.innerHTML = "";
+
+      if (bancoDados.pastas.length === 0) {
+        div.innerHTML = "<p>Nenhuma pasta cadastrada.</p>";
+        return;
+      }
+
+      bancoDados.pastas.forEach(pasta => {
+        const item = document.createElement("div");
+        item.className = "link-card";
+        item.innerHTML = `
+          <h4>${pasta.titulo}</h4>
+          <p><strong>Criador:</strong> ${pasta.criador}</p>
+          <a href="${pasta.url}" target="_blank" class="btn-drive">📂 ABRIR PASTA NO DRIVE</a>
+          <button onclick="excluirPasta(${pasta.id})" style="background:#e74c3c;">🗑️ Excluir</button>
+        `;
+        div.appendChild(item);
+      });
+    }
+
+    // Inicializar
+    renderizarPastas();
+  </script>
+</body>
+</html>

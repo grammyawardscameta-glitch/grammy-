@@ -67,6 +67,25 @@
       margin: 20px 0;
     }
 
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .btn-voltar, .btn-sair {
+      padding: 10px 20px;
+      background: #666;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-sair {
+      background: #e74c3c;
+    }
+
     .video-nav select {
       width: 100%;
       padding: 12px;
@@ -130,6 +149,13 @@
   <div class="container">
     <div class="logo"><i class="fas fa-award"></i></div>
     <h2>Avaliação de Vídeos</h2>
+
+    <!-- Botões de navegação -->
+    <div class="nav-buttons">
+      <button onclick="voltarPagina()" class="btn-voltar"> Voltar</button>
+      <button onclick="sair()" class="btn-sair"> Sair</button>
+    </div>
+
     <p>Bem-vindo, <strong id="nomeJurado">Jurado</strong>!</p>
 
     <div class="video-nav">
@@ -179,10 +205,26 @@
         return;
       }
 
+      let podeSelecionar = true;
+
       bancoDados.pastas.forEach(pasta => {
         const opt = document.createElement("option");
         opt.value = pasta.id;
         opt.textContent = pasta.titulo;
+
+        // Verifica se já foi avaliado
+        const jaAvaliado = avaliacoes[pasta.id] && avaliacoes[pasta.id][usuarioAtual];
+        
+        // Se não foi avaliado e não pode selecionar, desabilita
+        if (!jaAvaliado && !podeSelecionar) {
+          opt.disabled = true;
+        }
+
+        // Se não foi avaliado, bloqueia os próximos
+        if (!jaAvaliado) {
+          podeSelecionar = false;
+        }
+
         select.appendChild(opt);
       });
 
@@ -253,7 +295,19 @@
 
       localStorage.setItem("avaliacoes", JSON.stringify(avaliacoes));
       document.getElementById("resultado").textContent = `✅ Salvo! Média: ${media}`;
-      carregarSelect();
+      carregarSelect(); // Atualiza o select com base na avaliação salva
+    }
+
+    // Funções dos botões
+    function voltarPagina() {
+      window.history.back();
+    }
+
+    function sair() {
+      if (confirm("Tem certeza que deseja sair?")) {
+        localStorage.removeItem("usuarioAtual");
+        window.location.href = "login.html";
+      }
     }
 
     // Inicializar

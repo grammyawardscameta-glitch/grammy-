@@ -129,6 +129,12 @@
     <h2>Painel do Gerente</h2>
 
     <!-- Formulário de cadastro -->
+
+     <div class="nav-buttons">
+  <button onclick="voltarPagina()" class="btn-voltar"> Voltar</button>
+  <button onclick="sair()" class="btn-sair"> Sair</button>
+
+</div>
     <div>
       <h3 style="color:var(--gold);">🔗 Cadastrar Pasta do Google Drive</h3>
       <div class="form-group">
@@ -143,17 +149,27 @@
         <label>Link da Pasta no Google Drive</label>
         <input type="url" id="url" class="form-control" placeholder="Cole o link aqui">
       </div>
-      <button onclick="cadastrarPasta()" class="btn-login">➕ Cadastrar Pasta</button>
+      <button onclick="cadastrarPasta()" class="btn-login">➕ Salvar Link</button>
     </div>
 
     <!-- Lista de pastas cadastradas -->
     <div style="margin-top: 40px;">
-      <h3 style="color:var(--gold);">📁 Pastas Cadastradas</h3>
+      <h3 style="color:var(--gold);">📁 links cadastrados </h3>
       <div id="listaPastas"></div>
     </div>
   </div>
 
   <script>
+    function voltarPagina() {
+  window.history.back();
+}
+
+function sair() {
+  if (confirm("Tem certeza que deseja sair?")) {
+    localStorage.removeItem("usuarioAtual");
+    window.location.href = "login.html";
+  }
+}
     // Banco de dados local
     let bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
 

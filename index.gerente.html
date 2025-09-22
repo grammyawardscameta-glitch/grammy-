@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR" id="html-theme">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Gerente - Grammy 2025</title>
+  <style>
+    :root {
+      --bg-primary: linear-gradient(135deg, #0c1a3e, #1a2d64);
+      --bg-secondary: rgba(10, 15, 50, 0.9);
+      --form-bg: rgba(15, 20, 60, 0.8);
+      --text-color: #fff;
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --input-border: rgba(255, 255, 255, 0.2);
+      --btn-gradient: linear-gradient(90deg, #00bfff, #0088cc);
+      --gold: gold;
+      --glow: rgba(255, 215, 0, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body {
+      background: var(--bg-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      background: var(--bg-secondary);
+      border: 3px solid var(--gold);
+      border-radius: 20px;
+      box-shadow: 0 0 30px var(--glow);
+      padding: 40px 20px;
+      margin: 30px 0;
+    }
+
+    .logo {
+      font-size: 4rem;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+      text-align: center;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: var(--gold);
+      text-shadow: 0 0 15px var(--glow);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-voltar { background: #666; color: white; }
+    .btn-sair { background: #e74c3c; color: white; }
+
+    .link-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid var(--gold);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    th {
+      background: rgba(0, 191, 255, 0.3);
+      color: var(--gold);
+    }
+
+    .ranking li {
+      background: rgba(0, 191, 255, 0.2);
+      margin: 5px 0;
+      padding: 10px;
+      border-left: 4px solid var(--gold);
+      color: var(--gold);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Bibliotecas para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo"><i class="fas fa-award"></i></div>
+    <h2>Painel do Gerente</h2>
+
+    <!-- Botões de navegação -->
+    <div class="nav-buttons">
+      <button onclick="voltarPagina()" class="btn-voltar"> sair</button>
+    
+    </div>
+
+    <!-- Cadastro de link -->
+    <div>
+      <h3 style="color:var(--gold);">🔗 Cadastrar Pasta do Google Drive</h3>
+      <div class="form-group">
+        <label>Título da Apresentação</label>
+        <input type="text" id="titulo" class="form-control" placeholder="Ex: Equipe A - Dança Criativa">
+      </div>
+      <div class="form-group">
+        <label>Nome da Equipe / Criador</label>
+        <input type="text" id="criador" class="form-control" placeholder="Equipe A">
+      </div>
+      <div class="form-group">
+        <label>Link da Pasta no Google Drive</label>
+        <input type="url" id="url" class="form-control" placeholder="Cole o link aqui">
+      </div>
+      <button onclick="cadastrarPasta()" class="btn-login">➕ Salvar Link</button>
+
+    </div>
+
+    <!-- Links cadastrados -->
+    <div style="margin-top: 40px;">
+      <h3 style="color:var(--gold);">📁 Links Cadastrados</h3>
+      <div id="listaPastas"></div>
+
+    </div>
+
+    <!-- Ranking Final -->
+    <div style="margin-top: 40px;">
+      <h3 style="color:var(--gold);">🏆 Ranking Final</h3>
+      <ol id="ranking"></ol>
+      
+    </div>
+
+    <!-- Detalhes das Avaliações -->
+    <div style="margin-top: 40px;">
+      <h3 style="color:var(--gold);">📊 Avaliações por Jurado</h3>
+      <table id="tabelaAvaliacoes"></table>
+    </div>
+
+    <!-- Botão de PDF -->
+    <div style="text-align:center; margin:40px 0;">
+      <button onclick="gerarPDF()" style="padding:14px 28px; background:var(--btn-gradient); color:white; border:none; border-radius:8px;">📄 Baixar Relatório em PDF</button>
+    </div>
+  </div>
+
+  <!-- Relatório oculto para PDF -->
+  <div id="relatorioPDF" style="position: absolute; left: -9999px; width: 210mm; background: white; color: black; font-family: Arial;">
+    <h2>Relatório de Avaliações - The Grammy Awards 2025</h2>
+    <p><strong>Data:</strong> <span id="pdfData"></span></p>
+    <div id="pdfTabela"></div>
+    <h3>Classificação Final</h3>
+    <ol id="pdfRanking"></ol>
+  </div>
+
+  <script>
+    // Recuperar dados
+    let bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
+    let avaliacoes = JSON.parse(localStorage.getItem("avaliacoes")) || {};
+
+    function cadastrarPasta() {
+      const titulo = document.getElementById("titulo").value.trim();
+      const criador = document.getElementById("criador").value.trim();
+      const url = document.getElementById("url").value.trim();
+
+      if (!titulo || !criador || !url) {
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      const id = bancoDados.pastas.length ? bancoDados.pastas[bancoDados.pastas.length - 1].id + 1 : 1;
+      bancoDados.pastas.push({ id, titulo, criador, url });
+      localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
+      renderizarPastas();
+      atualizarRanking();
+      mostrarDetalhesAvaliacoes();
+
+      // Limpar campos
+      document.getElementById("titulo").value = "";
+      document.getElementById("criador").value = "";
+      document.getElementById("url").value = "";
+    }
+
+    function excluirPasta(id) {
+      if (confirm("Tem certeza que deseja excluir esta pasta?")) {
+        bancoDados.pastas = bancoDados.pastas.filter(p => p.id !== id);
+        delete avaliacoes[id];
+        localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
+        localStorage.setItem("avaliacoes", JSON.stringify(avaliacoes));
+        renderizarPastas();
+        atualizarRanking();
+        mostrarDetalhesAvaliacoes();
+      }
+    }
+
+    function renderizarPastas() {
+      const div = document.getElementById("listaPastas");
+      div.innerHTML = "";
+
+      if (bancoDados.pastas.length === 0) {
+        div.innerHTML = "<p>Nenhuma pasta cadastrada.</p>";
+        return;
+      }
+
+      bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        const media = Object.keys(avs).length 
+          ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length).toFixed(2)
+          : "–";
+
+        const item = document.createElement("div");
+        item.className = "link-card";
+        item.innerHTML = `
+          <h4>${pasta.titulo}</h4>
+          <p><strong>Criador:</strong> ${pasta.criador}</p>
+          <p><strong>Média Geral:</strong> ${media} (${Object.keys(avs).length} avaliações)</p>
+          <a href="${pasta.url}" target="_blank" class="btn-drive">📂 ABRIR PASTA NO DRIVE</a>
+          <button onclick="excluirPasta(${pasta.id})" style="background:#e74c3c;">🗑️ Excluir</button>
+        `;
+        div.appendChild(item);
+      });
+    }
+
+    function atualizarRanking() {
+      const ol = document.getElementById("ranking");
+      ol.innerHTML = "";
+
+      const ranking = bancoDados.pastas
+        .map(pasta => {
+          const avs = avaliacoes[pasta.id] || {};
+          const media = Object.keys(avs).length 
+            ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length)
+            : 0;
+          return { ...pasta, media };
+        })
+        .sort((a, b) => b.media - a.media);
+
+      ranking.forEach((pasta, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${["1º","2º","3º"][i] || (i+1)+"º"} lugar: ${pasta.titulo} - Média ${pasta.media.toFixed(2)}`;
+        ol.appendChild(li);
+      });
+    }
+
+    function mostrarDetalhesAvaliacoes() {
+      const tabela = document.getElementById("tabelaAvaliacoes");
+      tabela.innerHTML = "";
+
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Vídeo</th>
+          <th>Jurado</th>
+          <th>Média</th>
+          <th>Notas</th>
+        </tr>
+      `;
+      tabela.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
+      bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        Object.keys(avs).forEach(jurado => {
+          const av = avs[jurado];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${pasta.titulo}</td>
+            <td>${jurado}</td>
+            <td>${av.media}</td>
+            <td>${Object.values(av.notas).map(n => n.toFixed(1)).join(', ')}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+
+      if (tbody.children.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4">Nenhuma avaliação feita.</td>`;
+        tbody.appendChild(tr);
+      }
+
+      tabela.appendChild(tbody);
+    }
+
+    function gerarPDF() {
+      const { jsPDF } = window.jspdf;
+      document.getElementById("pdfData").textContent = new Date().toLocaleString();
+
+      // Tabela de avaliações
+      let tabelaHTML = "<table border='1'><tr><th>Vídeo</th><th>Jurado</th><th>Média</th></tr>";
+      bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        Object.keys(avs).forEach(jurado => {
+          const av = avs[jurado];
+          tabelaHTML += `<tr><td>${pasta.titulo}</td><td>${jurado}</td><td>${av.media}</td></tr>`;
+        });
+      });
+      tabelaHTML += "</table>";
+      document.getElementById("pdfTabela").innerHTML = tabelaHTML;
+
+      // Ranking no PDF
+      const olPDF = document.getElementById("pdfRanking");
+      olPDF.innerHTML = "";
+      const ranking = bancoDados.pastas
+        .map(pasta => {
+          const avs = avaliacoes[pasta.id] || {};
+          const media = Object.keys(avs).length 
+            ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length)
+            : 0;
+          return { ...pasta, media };
+        })
+        .sort((a, b) => b.media - a.media);
+      ranking.forEach((pasta, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${["1º","2º","3º"][i] || (i+1)+"º"} lugar: ${pasta.titulo} - Média ${pasta.media.toFixed(2)}`;
+        olPDF.appendChild(li);
+      });
+
+      // Gerar PDF
+      html2canvas(document.getElementById("relatorioPDF")).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+        pdf.save("relatorio_grammy_2025.pdf");
+      });
+    }
+
+    function voltarPagina() {
+      window.history.back();
+    }
+
+    function sair() {
+      if (confirm("Tem certeza que deseja sair?")) {
+        localStorage.removeItem("usuarioAtual");
+        window.location.href = "login.html";
+      }
+    }
+
+    // Inicializar
+    renderizarPastas();
+    atualizarRanking();
+    mostrarDetalhesAvaliacoes();
+  </script>
+</body>
+</html>

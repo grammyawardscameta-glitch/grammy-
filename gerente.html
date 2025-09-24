@@ -155,20 +155,17 @@
       <h3 style="color:var(--gold);">📁 links cadastrados </h3>
       <div id="listaPastas"></div>
     </div>
+
   </div>
+  
    <button onclick="voltarPagina()" class="btn-voltar"> sair</button>
 
   <script>
     function voltarPagina() {
   window.history.back();
+  (confirm("Tem certeza que deseja VOLTAR?"))
 }
 
-function sair() {
-  if (confirm("Tem certeza que deseja sair?")) {
-    localStorage.removeItem("usuarioAtual");
-    window.location.href = "login.html";
-  }
-}
     // Banco de dados local
     let bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
 
@@ -186,7 +183,10 @@ function sair() {
 
       bancoDados.pastas.push({ id, titulo, criador, url });
       localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
-
+function atualizarDados() {
+  // Recarrega os dados do servidor (ou força leitura)
+  location.reload();
+}
       // Limpar campos
       document.getElementById("titulo").value = "";
       document.getElementById("criador").value = "";
@@ -225,9 +225,65 @@ function sair() {
         div.appendChild(item);
       });
     }
+//ABAIXAR PDF
+     function gerarPDF() {
+      const { jsPDF } = window.jspdf;
+      document.getElementById("pdfData").textContent = new Date().toLocaleString();
+
+      // Tabela de avaliações
+      let tabelaHTML = "<table border='1'><tr><th>Vídeo</th><th>Jurado</th><th>Média</th></tr>";
+      bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        Object.keys(avs).forEach(jurado => {
+          const av = avs[jurado];
+          tabelaHTML += `<tr><td>${pasta.titulo}</td><td>${jurado}</td><td>${av.media}</td></tr>`;
+        });
+      });
+      tabelaHTML += "</table>";
+      document.getElementById("pdfTabela").innerHTML = tabelaHTML;
+
+      // Ranking no PDF
+      const olPDF = document.getElementById("pdfRanking");
+      olPDF.innerHTML = "";
+      const ranking = bancoDados.pastas
+        .map(pasta => {
+          const avs = avaliacoes[pasta.id] || {};
+          const media = Object.keys(avs).length 
+            ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length)
+            : 0;
+          return { ...pasta, media };
+        })
+        .sort((a, b) => b.media - a.media);
+      ranking.forEach((pasta, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${["1º","2º","3º"][i] || (i+1)+"º"} lugar: ${pasta.titulo} - Média ${pasta.media.toFixed(2)}`;
+        olPDF.appendChild(li);
+      });
+
+      // Gerar PDF
+      html2canvas(document.getElementById("relatorioPDF")).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+        pdf.save("relatorio_grammy_2025.pdf");
+      });
+    }
+
+    function voltarPagina() {
+      window.history.back();
+    }
+
+    function sair() {
+      if (confirm("Tem certeza que deseja sair?")) {
+        localStorage.removeItem("usuarioAtual");
+        window.location.href = "login.html";
+      }
+    }
 
     // Inicializar
     renderizarPastas();
+    atualizarRanking();
+    mostrarDetalhesAvaliacoes();
   </script>
 </body>
 </html>

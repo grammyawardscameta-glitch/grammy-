@@ -6,9 +6,9 @@
   <title>Painel do Gerente - Grammy 2025</title>
   <style>
     :root {
-      --bg-primary: linear-gradient(135deg, #0c1a3e, #1a2d64);
+      --bg-primary: linear-gradient(135deg, #264491, #1a2d64);
       --bg-secondary: rgba(10, 15, 50, 0.9);
-      --form-bg: rgba(15, 20, 60, 0.8);
+      --form-bg: rgba(79, 92, 189, 0.8);
       --text-color: #fff;
       --input-bg: rgba(255, 255, 255, 0.1);
       --input-border: rgba(255, 255, 255, 0.2);
@@ -17,12 +17,14 @@
       --glow: rgba(255, 215, 0, 0.8);
     }
 
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Arial', sans-serif;
     }
+
 
     body::before {
       content: "";
@@ -35,6 +37,7 @@
       z-index: -1;
     }
 
+
     body {
       background: var(--bg-primary);
       min-height: 100vh;
@@ -43,6 +46,7 @@
       align-items: center;
       color: white;
     }
+
 
     .container {
       width: 90%;
@@ -55,12 +59,14 @@
       margin: 30px 0;
     }
 
+
     .logo {
       font-size: 4rem;
       color: var(--gold);
       text-shadow: 0 0 15px var(--glow);
       text-align: center;
     }
+
 
     h2 {
       text-align: center;
@@ -70,15 +76,18 @@
       margin: 20px 0;
     }
 
+
     .form-group {
       margin: 20px 0;
     }
+
 
     .form-group label {
       display: block;
       color: white;
       margin-bottom: 8px;
     }
+
 
     .form-control {
       width: 100%;
@@ -89,6 +98,7 @@
       color: white;
     }
 
+
     button {
       padding: 12px 20px;
       background: var(--btn-gradient);
@@ -98,77 +108,225 @@
       cursor: pointer;
     }
 
-    .link-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
+
+    .btn-voltar {
+      background: #ca151e;
+      color: white;
+    }
+
+
+    .section {
       padding: 20px;
-      margin: 20px 0;
-      border: 1px solid var(--gold);
+      border-bottom: 1px solid #eee;
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
+      color: #1a2b6d;
+      margin-bottom: 15px;
+      border-left: 4px solid #1a2b6d;
+      padding-left: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #1a2b6d;
+    }
+
+    .btn-primary {
+      background: #1a2b6d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary:hover {
+      background: #132057;
+    }
+
+    .link-card {
+      background: #134a81;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
     }
 
     .link-card h4 {
-      color: var(--gold);
+      font-size: 1.1rem;
+      color: #1a2b6d;
+      margin-bottom: 8px;
     }
 
-    a.btn-drive {
+    .link-card p {
+      font-size: 0.95rem;
+      color: #555;
+      margin: 4px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #14084e;
+    }
+
+    th {
+      background: #e9ecef;
+      color: #333;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f1f3f7;
+    }
+
+    ol.ranking {
+      list-style: none;
+      padding: 0;
+    }
+
+    ol.ranking li {
+      padding: 10px 15px;
+      background: #052b52;
+      margin: 8px 0;
+      border-left: 4px solid #1a2b6d;
+      font-size: 1rem;
+    }
+
+    .pdf-button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      background: #007bff;
       color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      background: #0088cc;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
       border-radius: 8px;
-      display: inline-block;
-      margin: 10px 0;
+      cursor: pointer;
+      margin: 20px 0;
+    }
+
+    .pdf-button:hover {
+      background: #0069d9;
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Bibliotecas para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
   <div class="container">
-    <div class="logo"><i class="fas fa-award"></i></div>
-    <h2>Painel do Gerente</h2>
 
-    <!-- Formulário de cadastro -->
+    <!-- Cabeçalho -->
+    <header>
+      <h1>The Grammy Awards 2025</h1>
+      <p>Painel do Gerente - Administração de Avaliações</p>
+    </header>
 
-     <div class="nav-buttons">
+    <!-- Botões de navegação -->
+    <div class="nav-buttons">
+      <button onclick="voltarPagina()" class="btn btn-voltar"> sair</button>
+    
+    </div>
 
-</div>
-    <div>
-      <h3 style="color:var(--gold);">🔗 Cadastrar Pasta do Google Drive</h3>
+    <!-- Cadastro de link -->
+    <div class="section">
+      <h1> Cadastrar Apresentação</h1>
       <div class="form-group">
         <label>Título da Apresentação</label>
         <input type="text" id="titulo" class="form-control" placeholder="Ex: Equipe A - Dança Criativa">
       </div>
       <div class="form-group">
-        <label>Nome da Equipe / Criador</label>
-        <input type="text" id="criador" class="form-control" placeholder="Equipe A">
+        <label>Criador / Equipe</label>
+        <input type="text" id="criador" class="form-control" placeholder="Nome da equipe">
       </div>
       <div class="form-group">
         <label>Link da Pasta no Google Drive</label>
-        <input type="url" id="url" class="form-control" placeholder="Cole o link aqui">
+        <input type="url" id="url" class="form-control" placeholder="Cole o link público aqui">
       </div>
-      <button onclick="cadastrarPasta()" class="btn-login">➕ Salvar Link</button>
+      <button onclick="cadastrarPasta()" class="btn-primary">➕ Cadastrar Apresentação</button>
     </div>
 
-    <!-- Lista de pastas cadastradas -->
-    <div style="margin-top: 40px;">
-      <h3 style="color:var(--gold);">📁 links cadastrados </h3>
-      <div id="listaPastas"></div>
+    <!-- Links cadastrados -->
+    <div class="section">
+      <h3>📁 Apresentações Cadastradas</h3>
+      <div id="listaPastas">
+        <!-- Será preenchido dinamicamente -->
+      </div>
+    </div>
+
+    <!-- Ranking Final -->
+    <div class="section">
+      <h3>Classificação Final</h3>
+      <ol class="ranking" id="ranking">
+        <!-- Preenchido automaticamente -->
+      </ol>
+    </div>
+
+    <!-- Detalhes das Avaliações -->
+    <div class="section">
+      <h3> Avaliações por Jurado</h3>
+      <table id="tabelaAvaliacoes">
+        <!-- Preenchido automaticamente -->
+      </table>
+    </div>
+
+    <!-- Botão de PDF -->
+    <div style="padding: 20px; text-align: center; background: #054b92;">
+      <button onclick="gerarPDF()" class="pdf-button">📄 Baixar Relatório Completo em PDF</button>
     </div>
 
   </div>
-  
-   <button onclick="voltarPagina()" class="btn-voltar"> sair</button>
+
+  <!-- Relatório oculto para PDF -->
+  <div id="relatorioPDF" style="position: absolute; left: -9999px; width: 210mm; background: rgb(86, 74, 156); color: black; font-family: Arial;">
+    <h2>Relatório de Avaliações - The Grammy Awards 2025</h2>
+    <p><strong>Data:</strong> <span id="pdfData"></span></p>
+    <div id="pdfTabela"></div>
+    <h3>Classificação Final</h3>
+    <ol id="pdfRanking"></ol>
+  </div>
 
   <script>
-    function voltarPagina() {
-  window.history.back();
-  (confirm("Tem certeza que deseja VOLTAR?"))
-}
-
-    // Banco de dados local
+    // Recuperar dados salvos
     let bancoDados = JSON.parse(localStorage.getItem("bancoDados")) || { pastas: [] };
+    let avaliacoes = JSON.parse(localStorage.getItem("avaliacoes")) || {};
 
+    // Função: cadastrar nova apresentação
     function cadastrarPasta() {
       const titulo = document.getElementById("titulo").value.trim();
       const criador = document.getElementById("criador").value.trim();
@@ -180,53 +338,128 @@
       }
 
       const id = bancoDados.pastas.length ? bancoDados.pastas[bancoDados.pastas.length - 1].id + 1 : 1;
-
       bancoDados.pastas.push({ id, titulo, criador, url });
       localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
-function atualizarDados() {
-  // Recarrega os dados do servidor (ou força leitura)
-  location.reload();
-}
+
       // Limpar campos
       document.getElementById("titulo").value = "";
       document.getElementById("criador").value = "";
       document.getElementById("url").value = "";
 
-      // Atualizar lista
+      // Atualizar exibição
       renderizarPastas();
+      atualizarRanking();
+      mostrarDetalhesAvaliacoes();
     }
 
+    // Função: excluir apresentação
     function excluirPasta(id) {
-      if (confirm("Tem certeza que deseja excluir esta pasta?")) {
+      if (confirm("Tem certeza que deseja excluir esta apresentação?")) {
         bancoDados.pastas = bancoDados.pastas.filter(p => p.id !== id);
+        delete avaliacoes[id];
         localStorage.setItem("bancoDados", JSON.stringify(bancoDados));
+        localStorage.setItem("avaliacoes", JSON.stringify(avaliacoes));
         renderizarPastas();
+        atualizarRanking();
+        mostrarDetalhesAvaliacoes();
       }
     }
 
+    // Função: renderizar lista de pastas
     function renderizarPastas() {
       const div = document.getElementById("listaPastas");
       div.innerHTML = "";
 
       if (bancoDados.pastas.length === 0) {
-        div.innerHTML = "<p>Nenhuma pasta cadastrada.</p>";
+        div.innerHTML = "<p>Nenhuma apresentação cadastrada.</p>";
         return;
       }
 
       bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        const media = Object.keys(avs).length 
+          ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length).toFixed(2)
+          : "–";
+
         const item = document.createElement("div");
         item.className = "link-card";
         item.innerHTML = `
           <h4>${pasta.titulo}</h4>
           <p><strong>Criador:</strong> ${pasta.criador}</p>
-          <a href="${pasta.url}" target="_blank" class="btn-drive">📂 ABRIR PASTA NO DRIVE</a>
-          <button onclick="excluirPasta(${pasta.id})" style="background:#e74c3c;">🗑️ Excluir</button>
+          <p><strong>Média Geral:</strong> ${media} (${Object.keys(avs).length} avaliações)</p>
+          <a href="${pasta.url}" target="_blank" style="color:#007bff;">📂 Acessar pasta no Google Drive</a>
+          <button onclick="excluirPasta(${pasta.id})" style="float:right; background:#dc3545; color:white; border:none; padding:6px 10px; border-radius:4px; font-size:0.9rem;">🗑️ Excluir</button>
         `;
         div.appendChild(item);
       });
     }
-//ABAIXAR PDF
-     function gerarPDF() {
+
+    // Função: atualizar ranking
+    function atualizarRanking() {
+      const ol = document.getElementById("ranking");
+      ol.innerHTML = "";
+
+      const ranking = bancoDados.pastas
+        .map(pasta => {
+          const avs = avaliacoes[pasta.id] || {};
+          const media = Object.keys(avs).length 
+            ? (Object.values(avs).map(a => parseFloat(a.media)).reduce((a,b) => a+b, 0) / Object.keys(avs).length)
+            : 0;
+          return { ...pasta, media };
+        })
+        .sort((a, b) => b.media - a.media);
+
+      ranking.forEach((pasta, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${["1º","2º","3º"][i] || (i+1)+"º"} lugar: ${pasta.titulo} - Média ${pasta.media.toFixed(2)}`;
+        ol.appendChild(li);
+      });
+    }
+
+    // Função: mostrar detalhes das avaliações
+    function mostrarDetalhesAvaliacoes() {
+      const tabela = document.getElementById("tabelaAvaliacoes");
+      tabela.innerHTML = "";
+
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Vídeo</th>
+          <th>Jurado</th>
+          <th>Média</th>
+          <th>Notas</th>
+        </tr>
+      `;
+      tabela.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
+      bancoDados.pastas.forEach(pasta => {
+        const avs = avaliacoes[pasta.id] || {};
+        Object.keys(avs).forEach(jurado => {
+          const av = avs[jurado];
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${pasta.titulo}</td>
+            <td>${jurado}</td>
+            <td>${av.media}</td>
+            <td>${Object.values(av.notas).map(n => n.toFixed(1)).join(', ')}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+
+      if (tbody.children.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4" style="text-align:center; color:#999;">Nenhuma avaliação realizada.</td>`;
+        tbody.appendChild(tr);
+      }
+
+      tabela.appendChild(tbody);
+    }
+
+    // Função: gerar PDF
+    function gerarPDF() {
       const { jsPDF } = window.jspdf;
       document.getElementById("pdfData").textContent = new Date().toLocaleString();
 
@@ -269,12 +502,13 @@ function atualizarDados() {
       });
     }
 
+    // Funções de navegação
     function voltarPagina() {
       window.history.back();
     }
 
     function sair() {
-      if (confirm("Tem certeza que deseja sair?")) {
+      if (confirm("Deseja realmente sair?")) {
         localStorage.removeItem("usuarioAtual");
         window.location.href = "login.html";
       }

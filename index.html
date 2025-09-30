@@ -239,7 +239,7 @@
 
       if (!usuario || !senha || !tipo) return showMessage("Preencha todos os campos.", "error");
 
-      const banco = { jurado1: "1234", jurado2: "5678", jurado3: "9999", RegianeNeves: "regiane@" };
+      const banco = { EduardoAzevedo: "Eduif25", RudielsonOliveira: "Rudif25", AdrianeMafra: "Drif25", RegianeNeves: "Regif25" };
 
       if (banco[usuario] && banco[usuario] === senha) {
         localStorage.setItem("usuarioAtual", JSON.stringify({ nome: usuario, tipo }));
